@@ -6,6 +6,11 @@ import dynamic from "next/dynamic";
 
 const ECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
+// Funktion zur Formatierung großer Zahlen mit Tausendertrennzeichen
+const formatNumber = (num: number) => {
+  return num.toLocaleString();
+};
+
 const HomePage = () => {
   const [chartData, setChartData] = useState<any[]>([]);
 
@@ -42,6 +47,13 @@ const HomePage = () => {
     },
     tooltip: {
       trigger: "axis",
+      formatter: (params: any) => {
+        let tooltipText = `${params[0].axisValue}<br/>`;
+        params.forEach((item: any) => {
+          tooltipText += `${item.marker} ${item.seriesName}: ${formatNumber(item.data)} ${item.dataIndex < chartData[0].channels.length ? chartData[0].channels[item.dataIndex].unit : ''}<br/>`;
+        });
+        return tooltipText;
+      },
     },
     xAxis: {
       type: "category",
@@ -49,6 +61,9 @@ const HomePage = () => {
     },
     yAxis: {
       type: "value",
+      axisLabel: {
+        formatter: (value: number) => formatNumber(value),
+      },
     },
     series:
       chartData.length > 0
