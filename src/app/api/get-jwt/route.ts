@@ -6,8 +6,8 @@ export async function GET() {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/swqapi/iam/jwt`,
       {
-        userId: "service@amperios.de",
-        password: "Sun@W0rk2024!",
+        userId: process.env.AMPERIOS_USER,
+        password: process.env.AMPERIOS_PW,
       },
       {
         headers: {

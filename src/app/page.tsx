@@ -47,6 +47,32 @@ const HomePage = () => {
     },
     tooltip: {
       trigger: "axis",
+      position: (point: number[], params: any, dom: HTMLElement, rect: any, size: any) => {
+        // 'point' is the mouse position
+        const [x, y] = point;
+        const { viewSize, contentSize } = size; // Size of the tooltip content and view size
+
+        const tooltipWidth = contentSize[0];
+        const tooltipHeight = contentSize[1];
+        const viewWidth = viewSize[0];
+        const viewHeight = viewSize[1];
+
+        // Position tooltip horizontally to avoid going out of view
+        let posX = x;
+        if (x + tooltipWidth > viewWidth) {
+          posX = viewWidth - tooltipWidth - 10; // Offset by 10 pixels from the edge
+        }
+
+        // Position tooltip vertically to avoid going out of view
+        let posY = y;
+        if (y + tooltipHeight > viewHeight) {
+          posY = y - tooltipHeight - 10; // Offset by 10 pixels from the cursor
+        } else if (y < tooltipHeight) {
+          posY = 10; // Move tooltip slightly below the top edge
+        }
+
+        return [posX, posY];
+      },
       formatter: (params: any) => {
         let tooltipText = `${params[0].axisValue}<br/>`;
         params.forEach((item: any) => {
